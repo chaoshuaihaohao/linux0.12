@@ -54,7 +54,7 @@ void __math_abort(struct info *, unsigned int);
 
 /*
  * Gcc forces this stupid alignment problem: I want to use only two longs
- * for the temporary real 64-bit mantissa, but then gcc aligns out the
+ * for the temporary real 64-bit mantissa, but then gcc -m32 aligns out the
  * structure to 12 bytes which breaks things in math_emulate.c. Shit. I
  * want some kind of "no-alignt" pragma or something.
  */

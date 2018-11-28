@@ -1,10 +1,10 @@
-CC	=gcc
-CFLAGS	=-O -Wall -fstrength-reduce -fcombine-regs -fomit-frame-pointer \
+CC	=gcc -m32
+CFLAGS	=-O -Wall -fstrength-reduce  -fomit-frame-pointer \
 	-finline-functions -nostdinc -I../include
-AS	=gas
-AR	=gar
-LD	=gld
-CPP	=gcc -E -nostdinc -I../include
+AS	=as --32
+AR	=ar
+LD	=ld -m elf_i386
+CPP	=gcc -m32 -E -nostdinc -I../include
 
 .c.o:
 	$(CC) $(CFLAGS) \

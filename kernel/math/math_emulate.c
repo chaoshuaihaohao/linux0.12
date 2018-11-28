@@ -5,7 +5,7 @@
  */
 
 /*
- * Limited emulation 27.12.91 - mostly loads/stores, which gcc wants
+ * Limited emulation 27.12.91 - mostly loads/stores, which gcc -m32 wants
  * even for soft-float, unless you use bruce evans' patches. The patches
  * are great, but they have to be re-applied for every version, and the
  * library is different for soft-float and 80387. So emulation is more
@@ -20,7 +20,7 @@
  */
 
 /*
- * This file is full of ugly macros etc: one problem was that gcc simply
+ * This file is full of ugly macros etc: one problem was that gcc -m32 simply
  * didn't want to make the structures as they should be: it has to try to
  * align them. Sickening code, but at least I've hidden the ugly things
  * in this one file: the other files don't need to know about these things.

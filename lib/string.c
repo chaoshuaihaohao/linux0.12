@@ -5,7 +5,7 @@
  */
 
 #ifndef __GNUC__
-#error I want gcc!
+#error I want gcc -m32!
 #endif
 
 #define extern
