@@ -106,16 +106,19 @@ int DEVICE_TIMEOUT = 0;
 #define SET_INTR(x) (DEVICE_INTR = (x))
 #endif
 static void (DEVICE_REQUEST)(void);
-
-extern inline void unlock_buffer(struct buffer_head * bh)
+#ifndef UNLOCK_BUFFER
+#define UNLOCK_BUFFER
+static inline void unlock_buffer(struct buffer_head * bh)
 {
 	if (!bh->b_lock)
 		printk(DEVICE_NAME ": free buffer being unlocked\n");
 	bh->b_lock=0;
 	wake_up(&bh->b_wait);
 }
-
-extern inline void end_request(int uptodate)
+#endif//UNLOCK_BUFFER
+#ifndef END_REQUEST
+#define END_REQUEST
+static inline void end_request(int uptodate)
 {
 	DEVICE_OFF(CURRENT->dev);
 	if (CURRENT->bh) {
@@ -132,7 +135,7 @@ extern inline void end_request(int uptodate)
 	CURRENT->dev = -1;
 	CURRENT = CURRENT->next;
 }
-
+#endif//END_REQUEST
 #ifdef DEVICE_TIMEOUT
 #define CLEAR_DEVICE_TIMEOUT DEVICE_TIMEOUT = 0;
 #else

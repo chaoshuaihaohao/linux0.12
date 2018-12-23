@@ -20,10 +20,10 @@
  * won't be any messing with the stack from main(), but we define
  * some others too.
  */
-extern inline _syscall0(int,fork)
-extern inline _syscall0(int,pause)
-extern inline _syscall1(int,setup,void *,BIOS)
-extern inline _syscall0(int,sync)
+inline _syscall0(int,fork)
+inline _syscall0(int,pause)
+inline _syscall1(int,setup,void *,BIOS)
+inline _syscall0(int,sync)
 
 #include <linux/tty.h>
 #include <linux/sched.h>
@@ -53,6 +53,9 @@ extern void floppy_init(void);
 extern void mem_init(long start, long end);
 extern long rd_init(long mem_start, int length);
 extern long kernel_mktime(struct tm * tm);
+void puts(){
+	//donothing
+}
 
 static int sprintf(char * str, const char *fmt, ...)
 {

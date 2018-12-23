@@ -56,7 +56,8 @@ static inline void lock_buffer(struct buffer_head * bh)
 	bh->b_lock=1;
 	sti();
 }
-
+#ifndef UNLOCK_BUFFER
+#define UNLOCK_BUFFER
 static inline void unlock_buffer(struct buffer_head * bh)
 {
 	if (!bh->b_lock)
@@ -64,7 +65,7 @@ static inline void unlock_buffer(struct buffer_head * bh)
 	bh->b_lock = 0;
 	wake_up(&bh->b_wait);
 }
-
+#endif//UNLOCK_BUFFER
 /*
  * add-request adds a request to the linked list.
  * It disables interrupts so that it can muck with the

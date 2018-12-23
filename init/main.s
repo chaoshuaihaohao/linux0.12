@@ -4,17 +4,17 @@ gcc -m32_compiled.:
 LC0:
 	.ascii "out of memory\12\15\0"
 	.align 4
-_sprintf:
+sprintf:
 	movl 4(%esp),%edx
 	leal 12(%esp),%eax
 	pushl %eax
 	pushl 12(%esp)
 	pushl %edx
-	call _vsprintf
+	call vsprintf
 	addl $12,%esp
 	ret
 	.align 4
-_time_init:
+time_init:
 	pushl %ebp
 	movl %esp,%ebp
 	subl $44,%esp
@@ -191,26 +191,26 @@ L65:
 	decl -20(%ebp)
 	leal -36(%ebp),%eax
 	pushl %eax
-	call _kernel_mktime
-	movl %eax,_startup_time
+	call kernel_mktime
+	movl %eax,startup_time
 	leave
 	ret
 .data
 	.align 4
-_memory_end:
+memory_end:
 	.long 0
 	.align 4
-_buffer_memory_end:
+buffer_memory_end:
 	.long 0
 	.align 4
-_main_memory_start:
+main_memory_start:
 	.long 0
 .text
 LC1:
 	.ascii "/bin/sh\0"
 .data
 	.align 4
-_argv_rc:
+argv_rc:
 	.long LC1
 	.long 0
 .text
@@ -218,7 +218,7 @@ LC2:
 	.ascii "HOME=/\0"
 .data
 	.align 4
-_envp_rc:
+envp_rc:
 	.long LC2
 	.long 0
 	.long 0
@@ -227,7 +227,7 @@ LC3:
 	.ascii "-/bin/sh\0"
 .data
 	.align 4
-_argv:
+argv:
 	.long LC3
 	.long 0
 .text
@@ -235,7 +235,7 @@ LC4:
 	.ascii "HOME=/usr/root\0"
 .data
 	.align 4
-_envp:
+envp:
 	.long LC4
 	.long 0
 	.long 0
@@ -243,17 +243,17 @@ _envp:
 LC5:
 	.ascii "TERM=con%dx%d\0"
 	.align 4
-.globl _main
-_main:
+.globl main
+main:
 	pushl %ebp
 	movl %esp,%ebp
 	subl $8,%esp
 	pushl %edi
 	pushl %esi
 	movzwl 590332,%eax
-	movl %eax,_ROOT_DEV
+	movl %eax,ROOT_DEV
 	movzwl 590330,%eax
-	movl %eax,_SWAP_DEV
+	movl %eax,SWAP_DEV
 	movw 589838,%dx
 	andl $255,%edx
 	pushl %edx
@@ -264,11 +264,11 @@ _main:
 	movzwl -4(%ebp),%eax
 	pushl %eax
 	pushl $LC5
-	pushl $_term
-	call _sprintf
-	movl $_term,_envp+4
-	movl $_term,_envp_rc+4
-	movl $_drive_info,%edi
+	pushl $term
+	call sprintf
+	movl $term,envp+4
+	movl $term,envp_rc+4
+	movl $drive_info,%edi
 	movl $589952,%esi
 	movl $8,%ecx
 	cld
@@ -277,42 +277,42 @@ _main:
 	movzwl 589826,%eax
 	sall $10,%eax
 	addl $1048576,%eax
-	movl %eax,_memory_end
-	andl $-4096,_memory_end
+	movl %eax,memory_end
+	andl $-4096,memory_end
 	addl $16,%esp
-	cmpl $16777216,_memory_end
+	cmpl $16777216,memory_end
 	jle L69
-	movl $16777216,_memory_end
+	movl $16777216,memory_end
 L69:
-	cmpl $12582912,_memory_end
+	cmpl $12582912,memory_end
 	jle L70
-	movl $4194304,_buffer_memory_end
+	movl $4194304,buffer_memory_end
 	jmp L71
 	.align 4
 L70:
-	cmpl $6291456,_memory_end
+	cmpl $6291456,memory_end
 	jle L72
-	movl $2097152,_buffer_memory_end
+	movl $2097152,buffer_memory_end
 	jmp L71
 	.align 4
 L72:
-	movl $1048576,_buffer_memory_end
+	movl $1048576,buffer_memory_end
 L71:
-	movl _buffer_memory_end,%eax
-	movl %eax,_main_memory_start
-	pushl _memory_end
-	pushl _buffer_memory_end
-	call _mem_init
-	call _trap_init
-	call _blk_dev_init
-	call _chr_dev_init
-	call _tty_init
-	call _time_init
-	call _sched_init
-	pushl _buffer_memory_end
-	call _buffer_init
-	call _hd_init
-	call _floppy_init
+	movl buffer_memory_end,%eax
+	movl %eax,main_memory_start
+	pushl memory_end
+	pushl buffer_memory_end
+	call mem_init
+	call trap_init
+	call blk_dev_init
+	call chr_dev_init
+	call tty_init
+	call time_init
+	call sched_init
+	pushl buffer_memory_end
+	call buffer_init
+	call hd_init
+	call floppy_init
 /APP
 	sti
 	movl %esp,%eax
@@ -342,7 +342,7 @@ L71:
 L75:
 	testl %edx,%edx
 	jne L74
-	call _init
+	call init
 L74:
 L77:
 	movl $29,%eax
@@ -357,18 +357,18 @@ L77:
 	leave
 	ret
 	.align 4
-_printf:
+printf:
 	pushl %ebx
 	leal 12(%esp),%eax
 	pushl %eax
 	pushl 12(%esp)
 	pushl $_printbuf
-	call _vsprintf
+	call vsprintf
 	movl %eax,%ebx
 	pushl %ebx
 	pushl $_printbuf
 	pushl $1
-	call _write
+	call write
 	movl %ebx,%eax
 	addl $24,%esp
 	popl %ebx
@@ -387,7 +387,7 @@ LC11:
 	.ascii "\12\15child %d died with code %04x\12\15\0"
 	.align 4
 .globl _init
-_init:
+init:
 	pushl %ebp
 	movl %esp,%ebp
 	subl $4,%esp
@@ -395,35 +395,35 @@ _init:
 	pushl %esi
 	pushl %ebx
 	xorl %eax,%eax
-	movl $_drive_info,%ebx
+	movl $drive_info,%ebx
 /APP
 	int $0x80
 /NO_APP
 	testl %eax,%eax
 	jge L82
 	negl %eax
-	movl %eax,_errno
+	movl %eax,errno
 L82:
 	pushl $0
 	pushl $2
 	pushl $LC6
-	call _open
+	call open
 	pushl $0
-	call _dup
+	call dup
 	pushl $0
-	call _dup
-	movl _nr_buffers,%eax
+	call dup
+	movl nr_buffers,%eax
 	sall $10,%eax
 	pushl %eax
-	pushl _nr_buffers
+	pushl nr_buffers
 	pushl $LC7
-	call _printf
+	call printf
 	addl $32,%esp
-	movl _memory_end,%eax
-	subl _main_memory_start,%eax
+	movl memory_end,%eax
+	subl main_memory_start,%eax
 	pushl %eax
 	pushl $LC8
-	call _printf
+	call printf
 	addl $8,%esp
 	movl $2,%eax
 /APP
@@ -436,30 +436,30 @@ L82:
 	.align 4
 L86:
 	negl %eax
-	movl %eax,_errno
+	movl %eax,errno
 	movl $-1,%edi
 L85:
 	testl %edi,%edi
 	jne L84
 	pushl $0
-	call _close
+	call close
 	pushl $0
 	pushl $0
 	pushl $LC9
-	call _open
+	call open
 	addl $16,%esp
 	testl %eax,%eax
 	je L87
 	pushl $1
-	call __exit
+	call _exit
 	.align 4
 L87:
-	pushl $_envp_rc
-	pushl $_argv_rc
+	pushl $envp_rc
+	pushl $argv_rc
 	pushl $LC1
-	call _execve
+	call execve
 	pushl $2
-	call __exit
+	call _exit
 	.align 4
 L84:
 	testl %edi,%edi
@@ -467,7 +467,7 @@ L84:
 	leal -4(%ebp),%esi
 L89:
 	pushl %esi
-	call _wait
+	call wait
 	addl $4,%esp
 	cmpl %edi,%eax
 	jne L89
@@ -481,14 +481,14 @@ L91:
 	testl %eax,%eax
 	jge L94
 	negl %eax
-	movl %eax,_errno
+	movl %eax,errno
 	movl $-1,%eax
 L94:
 	movl %eax,%edi
 	testl %edi,%edi
 	jge L93
 	pushl $LC10
-	call _printf
+	call printf
 	addl $4,%esp
 	jmp L91
 	.align 4
@@ -496,39 +496,39 @@ L93:
 	testl %edi,%edi
 	jne L96
 	pushl $0
-	call _close
+	call close
 	pushl $1
-	call _close
+	call close
 	pushl $2
-	call _close
-	call _setsid
+	call close
+	call setsid
 	pushl $0
 	pushl $2
 	pushl $LC6
-	call _open
+	call open
 	pushl $0
-	call _dup
+	call dup
 	pushl $0
-	call _dup
+	call dup
 	addl $32,%esp
-	pushl $_envp
-	pushl $_argv
+	pushl $envp
+	pushl $argv
 	pushl $LC1
-	call _execve
+	call execve
 	pushl %eax
-	call __exit
+	call _exit
 	.align 4
 L96:
 L97:
 	pushl %esi
-	call _wait
+	call wait
 	addl $4,%esp
 	cmpl %edi,%eax
 	jne L97
 	pushl -4(%ebp)
 	pushl %edi
 	pushl $LC11
-	call _printf
+	call printf
 	addl $12,%esp
 	movl $36,%eax
 /APP
@@ -537,7 +537,7 @@ L97:
 	testl %eax,%eax
 	jge L91
 	negl %eax
-	movl %eax,_errno
+	movl %eax,errno
 	jmp L91
 	.align 4
 	leal -16(%ebp),%esp
@@ -546,6 +546,6 @@ L97:
 	popl %edi
 	leave
 	ret
-.comm _drive_info,32
-.lcomm _term,32
-.lcomm _printbuf,1024
+.comm drive_info,32
+.lcomm term,32
+.lcomm printbuf,1024
